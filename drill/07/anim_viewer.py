@@ -1,11 +1,10 @@
 from pico2d import *
-
 open_canvas()
-
 star = load_image('star_run.png')
 grass = load_image('grass.png')
 x = 0
 frame = 0
+
 
 while(x<800):
     clear_canvas()
