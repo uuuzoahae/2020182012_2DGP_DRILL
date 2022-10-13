@@ -4,7 +4,9 @@ from pico2d import *
 def handle_events():
     global running
     global x,y
-    global dir, dirud
+    global dir, dirud , neutral
+
+    neutral = 1
 
     events = get_events()
     for event in events:
@@ -13,8 +15,10 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_RIGHT:
                 dir += 1
+                neutral = 1
             elif event.key == SDLK_LEFT:
                 dir -= 1
+                nuetral = -1
             elif event.key == SDLK_UP:
                 dirud += 1
             elif event.key == SDLK_DOWN:
@@ -43,54 +47,35 @@ y = 400 // 2 - 110
 frame = 0
 dir=0
 dirud=0
-
-
-def IDLE():
-
-    global frame
-
-    while(dir==0):
-        clear_canvas()
-        background.draw(400, 300)
-        grass.draw(400, 30)
-
-        if dir>0:
-            character.clip_draw(frame*100,100*3,100,100,x,y)
-        elif dir<0:
-            character.clip_draw(frame*100,100*2,100,100,x,y)
-
-        update_canvas()
-        handle_events()
-        frame = (frame + 1) % 8
-
-        delay(0.01)
-
-
-
+neutral = 0
 
 while running:
     clear_canvas()
     background.draw(400, 300)
     grass.draw(400, 30)
 
-    if dir>0:
+    if dir > 0 or dirud > 0:
         character.clip_draw(frame * 100, 100 * 1 , 100, 100, x, y)
-    elif dir<0:
+    elif dir < 0 or dirud < 0:
         character.clip_draw(frame* 100, 100 *0 , 100, 100, x, y)
-    elif dir==0:
-        character.clip_draw(frame*100,100*2,100,100,x,y)
+    elif dir == 0:
+        if neutral > 0:
+            character.clip_draw(frame*100,100*2,100,100,x,y)
+        elif neutral < 0 :
+            character.clip_draw(frame*100,100*3,100,100,x,y)
+
     update_canvas()
     handle_events()
     frame = (frame + 1) % 8
 
     if x < 0:
-        close_canvas()
+        running = False
     elif x > 800:
-        close_canvas()
+        running = False
     elif y < 0:
-        close_canvas()
+        running = False
     elif y > 600:
-        close_canvas()
+        running = False
 
     y += dirud * 5
     x += dir * 5
